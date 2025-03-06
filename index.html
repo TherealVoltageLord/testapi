@@ -40,26 +40,24 @@
 </head>
 <body>
 
-    <h2>Search for a Historical Figure</h2>
+    <h2>Search for Historical Data</h2>
     <select id="category">
-        <option value="myth">Myth</option>
         <option value="battle">Battle</option>
         <option value="inventor">Inventor</option>
+        <option value="myth">Myth</option>
         <option value="political">Political</option>
     </select>
     <input type="text" id="name" placeholder="Enter name">
-    <button onclick="searchHistorian()">Search</button>
+    <button onclick="searchHistory()">Search</button>
 
     <div id="result" class="result" style="display:none;">
         <h3 id="histName"></h3>
-        <p><strong>Birthplace:</strong> <span id="birthplace"></span></p>
-        <p><strong>Impact:</strong> <span id="impact"></span></p>
-        <p><strong>Year of Birth:</strong> <span id="birthYear"></span></p>
-        <img id="histImage" src="https://files.catbox.moe/5z47b4.jpeg" alt="Historian Image">
+        <div id="details"></div>
+        <img id="histImage" src="https://files.catbox.moe/5z47b4.jpeg" alt="Image">
     </div>
 
     <script>
-        function searchHistorian() {
+        function searchHistory() {
             let category = document.getElementById("category").value;
             let name = document.getElementById("name").value.trim();
 
@@ -74,20 +72,48 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.error) {
-                        alert("Historian not found.");
+                        alert("Data not found.");
                         return;
                     }
 
                     document.getElementById("histName").innerText = data.name || "Unknown";
-                    document.getElementById("birthplace").innerText = data.birthplace || "Unknown";
-                    document.getElementById("impact").innerText = data.impact || "No details available.";
-                    document.getElementById("birthYear").innerText = data.birth_year || "Unknown";
+                    let detailsHtml = "";
+
+                    if (category === "battle") {
+                        detailsHtml = `
+                            <p><strong>Year:</strong> ${data.year || "Unknown"}</p>
+                            <p><strong>Location:</strong> ${data.location || "Unknown"}</p>
+                            <p><strong>Result:</strong> ${data.result || "Unknown"}</p>
+                            <p><strong>Description:</strong> ${data.description || "No details available."}</p>
+                        `;
+                    } else if (category === "inventor") {
+                        detailsHtml = `
+                            <p><strong>Invention:</strong> ${data.invention || "Unknown"}</p>
+                            <p><strong>Year:</strong> ${data.year || "Unknown"}</p>
+                            <p><strong>Impact:</strong> ${data.impact || "No details available."}</p>
+                        `;
+                    } else if (category === "myth") {
+                        detailsHtml = `
+                            <p><strong>Origin:</strong> ${data.origin || "Unknown"}</p>
+                            <p><strong>Role:</strong> ${data.role || "Unknown"}</p>
+                            <p><strong>Notable Story:</strong> ${data.notable_story || "No details available."}</p>
+                            <p><strong>Symbol:</strong> ${data.symbol || "Unknown"}</p>
+                        `;
+                    } else if (category === "political") {
+                        detailsHtml = `
+                            <p><strong>Country:</strong> ${data.country || "Unknown"}</p>
+                            <p><strong>Role:</strong> ${data.role || "Unknown"}</p>
+                            <p><strong>Impact:</strong> ${data.impact || "No details available."}</p>
+                        `;
+                    }
+
+                    document.getElementById("details").innerHTML = detailsHtml;
                     document.getElementById("histImage").src = data.image || "https://files.catbox.moe/5z47b4.jpeg";
                     document.getElementById("result").style.display = "block";
                 })
                 .catch(error => {
                     console.error("Error fetching data:", error);
-                    alert("Failed to fetch historian data.");
+                    alert("Failed to fetch data.");
                 });
         }
     </script>
