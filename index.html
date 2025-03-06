@@ -5,62 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>History API Tester</title>
     
-    <!-- Metadata for preview -->
+    <!-- Metadata -->
     <meta property="og:title" content="History API Tester">
     <meta property="og:description" content="Search for historical figures and learn more about their impact.">
     <meta property="og:image" content="https://files.catbox.moe/5z47b4.jpeg">
     <meta property="og:url" content="https://voltagelord-myapi.hf.space">
     <meta name="twitter:card" content="summary_large_image">
 
+    <!-- Font Awesome Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin: 50px;
-            background-color: #f4f4f4;
+            background-color: #f4f8ff; /* Light Blue */
+            margin: 0;
+            padding: 20px;
         }
-        input, select, button {
+        h2 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        input {
             padding: 10px;
-            margin: 10px;
             font-size: 16px;
+            width: 60%;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        .btn {
+            padding: 12px 18px;
+            font-size: 16px;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s ease;
+        }
+        .btn i {
+            font-size: 18px;
+        }
+        .battle { background-color: #2ecc71; }        /* Light Green */
+        .inventor { background-color: #3498db; }     /* Light Blue */
+        .myth { background-color: #27ae60; }         /* Darker Green */
+        .political { background-color: #2980b9; }    /* Darker Blue */
+        .btn:hover { opacity: 0.8; }
+
         .result {
             background: white;
             padding: 20px;
             margin-top: 20px;
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            display: none;
         }
         img {
             width: 300px;
             border-radius: 8px;
             margin-top: 10px;
         }
+        #details {
+            text-align: left;
+            max-width: 500px;
+            margin: auto;
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
 
     <h2>Search for Historical Data</h2>
-    <select id="category">
-        <option value="battle">Battle</option>
-        <option value="inventor">Inventor</option>
-        <option value="myth">Myth</option>
-        <option value="political">Political</option>
-    </select>
     <input type="text" id="name" placeholder="Enter name">
-    <button onclick="searchHistory()">Search</button>
 
-    <div id="result" class="result" style="display:none;">
+    <div class="buttons">
+        <button class="btn battle" onclick="searchHistory('battle')"><i class="fas fa-shield-alt"></i> Battle</button>
+        <button class="btn inventor" onclick="searchHistory('inventor')"><i class="fas fa-lightbulb"></i> Inventor</button>
+        <button class="btn myth" onclick="searchHistory('myth')"><i class="fas fa-dragon"></i> Myth</button>
+        <button class="btn political" onclick="searchHistory('political')"><i class="fas fa-landmark"></i> Political</button>
+    </div>
+
+    <div id="result" class="result">
         <h3 id="histName"></h3>
         <div id="details"></div>
         <img id="histImage" src="https://files.catbox.moe/5z47b4.jpeg" alt="Image">
     </div>
 
-    <script>
-        function searchHistory() {
-            let category = document.getElementById("category").value;
-            let name = document.getElementById("name").value.trim();
+    <footer>
+        &copy; 2025 Voltage Lord. All rights reserved.
+    </footer>
 
+    <script>
+        function searchHistory(category) {
+            let name = document.getElementById("name").value.trim();
             if (name === "") {
                 alert("Please enter a name.");
                 return;
@@ -81,29 +133,29 @@
 
                     if (category === "battle") {
                         detailsHtml = `
-                            <p><strong>Year:</strong> ${data.year || "Unknown"}</p>
-                            <p><strong>Location:</strong> ${data.location || "Unknown"}</p>
-                            <p><strong>Result:</strong> ${data.result || "Unknown"}</p>
-                            <p><strong>Description:</strong> ${data.description || "No details available."}</p>
+                            <p><i class="fas fa-calendar"></i> <strong>Year:</strong> ${data.year || "Unknown"}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> ${data.location || "Unknown"}</p>
+                            <p><i class="fas fa-trophy"></i> <strong>Result:</strong> ${data.result || "Unknown"}</p>
+                            <p><i class="fas fa-book"></i> <strong>Description:</strong> ${data.description || "No details available."}</p>
                         `;
                     } else if (category === "inventor") {
                         detailsHtml = `
-                            <p><strong>Invention:</strong> ${data.invention || "Unknown"}</p>
-                            <p><strong>Year:</strong> ${data.year || "Unknown"}</p>
-                            <p><strong>Impact:</strong> ${data.impact || "No details available."}</p>
+                            <p><i class="fas fa-cogs"></i> <strong>Invention:</strong> ${data.invention || "Unknown"}</p>
+                            <p><i class="fas fa-calendar"></i> <strong>Year:</strong> ${data.year || "Unknown"}</p>
+                            <p><i class="fas fa-bolt"></i> <strong>Impact:</strong> ${data.impact || "No details available."}</p>
                         `;
                     } else if (category === "myth") {
                         detailsHtml = `
-                            <p><strong>Origin:</strong> ${data.origin || "Unknown"}</p>
-                            <p><strong>Role:</strong> ${data.role || "Unknown"}</p>
-                            <p><strong>Notable Story:</strong> ${data.notable_story || "No details available."}</p>
-                            <p><strong>Symbol:</strong> ${data.symbol || "Unknown"}</p>
+                            <p><i class="fas fa-globe"></i> <strong>Origin:</strong> ${data.origin || "Unknown"}</p>
+                            <p><i class="fas fa-user"></i> <strong>Role:</strong> ${data.role || "Unknown"}</p>
+                            <p><i class="fas fa-book-open"></i> <strong>Notable Story:</strong> ${data.notable_story || "No details available."}</p>
+                            <p><i class="fas fa-star"></i> <strong>Symbol:</strong> ${data.symbol || "Unknown"}</p>
                         `;
                     } else if (category === "political") {
                         detailsHtml = `
-                            <p><strong>Country:</strong> ${data.country || "Unknown"}</p>
-                            <p><strong>Role:</strong> ${data.role || "Unknown"}</p>
-                            <p><strong>Impact:</strong> ${data.impact || "No details available."}</p>
+                            <p><i class="fas fa-flag"></i> <strong>Country:</strong> ${data.country || "Unknown"}</p>
+                            <p><i class="fas fa-user-tie"></i> <strong>Role:</strong> ${data.role || "Unknown"}</p>
+                            <p><i class="fas fa-university"></i> <strong>Impact:</strong> ${data.impact || "No details available."}</p>
                         `;
                     }
 
